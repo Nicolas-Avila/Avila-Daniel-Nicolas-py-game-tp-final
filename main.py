@@ -1,99 +1,88 @@
 import pygame
-from pygame.locals import *
-from player import Player
-from enemigo import Enemy
-from plataforma import Plataform
-from bulletbn import Bullet
-from constantes import *
-import sys
 
+# Dimensiones de la ventana
+ANCHO_VENTANA = 1500
+ALTO_VENTANA = 800
 
-flags = DOUBLEBUF 
-screen = pygame.display.set_mode((ANCHO_VENTANA,ALTO_VENTANA), flags, 16)
-enemy = pygame.sprite.Group()
+# Inicializar Pygame
 pygame.init()
-clock = pygame.time.Clock()
-
-pygame.display.set_caption("El bebe viejo (no es benjamin button)")
-icono=pygame.image.load("images/caracters/players/stay/0.png")
-pygame.display.set_icon(icono)
-
-#Se inicializa la imagen del fondo y se escala al alto y ancho de la pantalla
-imagen_fondo = pygame.image.load("images/locations/castle.png").convert()
-imagen_fondo = pygame.transform.scale(imagen_fondo, (ANCHO_VENTANA, ALTO_VENTANA))
+ 
 
 
-#crea pj
-player_1 = Player(x=100,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=1.2,interval_time_jump=100,enemy = enemy)
-
-#crea npc    
-enemy_list = []
-enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-enemy_list.append (Enemy(x=900,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-enemy.add(enemy_list)        
-    
-#crea plataforma
-plataform_list = []
-plataform_list.append(Plataform(x=400,y=500,width=50,height=50,type=0))
-plataform_list.append(Plataform(x=450,y=500,width=50,height=50,type=1))
-plataform_list.append(Plataform(x=500,y=500,width=50,height=50,type=2))   
-plataform_list.append(Plataform(x=600,y=430,width=50,height=50,type=12))
-plataform_list.append(Plataform(x=650,y=430,width=50,height=50,type=14))
-plataform_list.append(Plataform(x=750,y=360,width=50,height=50,type=12))
-plataform_list.append(Plataform(x=800,y=360,width=50,height=50,type=13))
-plataform_list.append(Plataform(x=850,y=360,width=50,height=50,type=13))
-plataform_list.append(Plataform(x=900,y=360,width=50,height=50,type=14))
+screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
+pygame.display.set_caption("Ingrese Nivel")
 
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+fondo = pygame.image.load("images/locations/castle.png").convert()
+fondo = pygame.transform.scale(fondo, (ANCHO_VENTANA, ALTO_VENTANA))
 
-    keys = pygame.key.get_pressed()
+marco = pygame.image.load("images/gui/set_gui_01/Comic_Border/Frames/Frames_Menu06_b.png")
+marco = pygame.transform.scale(marco, (600, 500))  # Ajusta el tamaño de la imagen según sea necesario
+marco_rect = marco.get_rect(center=(ANCHO_VENTANA // 2, ALTO_VENTANA // 2))
 
+marco_1_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
+marco_1_image = pygame.transform.scale(marco_1_image, (100, 100))
+marco_1_rect = pygame.Rect(490, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
-    delta_ms = clock.tick(FPS)
-    screen.blit(imagen_fondo,imagen_fondo.get_rect())
+marco_2_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
+marco_2_image = pygame.transform.scale(marco_2_image, (100, 100))
+marco_2_rect = pygame.Rect(670, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
-    for plataforma in plataform_list:
-        plataforma.draw(screen)
+marco_3_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
+marco_3_image = pygame.transform.scale(marco_3_image, (100, 100))
+marco_3_rect = pygame.Rect(850, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
-    for index, enemy in enumerate(enemy_list):
-        enemy.update(delta_ms, plataform_list, enemy_list, index)
-        enemy.draw(screen)
+nivel_1_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element32s.png")
+nivel_2_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element32s.png")
+nivel_3_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element32s.png")
 
-    player_1.events(delta_ms,keys)
-    player_1.update(delta_ms,plataform_list)
-    player_1.draw(screen)
-    player_1.bullet.update()
-    player_1.bullet.draw(screen)
+# Ajustar el tamaño de las imágenes según sea necesario
+nivel_1_numero = pygame.transform.scale(nivel_1_numero, (35, 70))
+nivel_1_rect = pygame.Rect(520, 315, 90, 90)
+nivel_2_numero = pygame.transform.scale(nivel_2_numero, (70, 70))
+nivel_2_rect = pygame.Rect(685, 315, 90, 90)
+nivel_3_numero = pygame.transform.scale(nivel_3_numero, (70, 70))
+nivel_3_rect = pygame.Rect(865, 315, 90, 90)
 
-   
+def main():
+    # Lógica del juego
+    from level import nivel_1
+    running = True
+    current_level = 0
 
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if nivel_1_rect.collidepoint(event.pos):
+                    current_level = 1
+                elif nivel_2_rect.collidepoint(event.pos):
+                    current_level = 2
+                elif nivel_3_rect.collidepoint(event.pos):
+                    current_level = 3
 
+        
+        if current_level == 1:
+            nivel_1()
+        elif current_level == 2:
+            pass
+        elif current_level == 3:
+            pass
+        # Añade más niveles según sea necesario
 
+        screen.blit(fondo, (0, 0))
+        screen.blit(marco, marco_rect)
+        screen.blit(marco_1_image, marco_1_rect)
+        screen.blit(marco_2_image, marco_2_rect)
+        screen.blit(marco_3_image, marco_3_rect)
+        screen.blit(nivel_1_numero, nivel_1_rect)
+        screen.blit(nivel_2_numero, nivel_2_rect)
+        screen.blit(nivel_3_numero, nivel_3_rect)
+        pygame.display.flip()  # Actualizar la pantalla en cada iteración del bucle
 
-  
+    pygame.quit()
 
-
-
-    pygame.display.flip()
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main()

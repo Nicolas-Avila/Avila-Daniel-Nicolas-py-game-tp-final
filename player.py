@@ -22,8 +22,8 @@ class Player():
        # self.knife_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/mariposa/{0}.png",0,119,flip=False,scale=p_scale)
        # self.knife_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/mariposa/{0}.png",0,119,flip=True,scale=p_scale)
 
-        self.damage_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",0,4,flip=False,scale=p_scale)
-        self.damage_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",0,4,flip=True,scale=p_scale)
+        self.damage_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",1,3,flip=False,scale=p_scale)
+        self.damage_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",1,3,flip=True,scale=p_scale)
 
         self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,15,flip=False,scale=p_scale)
         self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,15,flip=True,scale=p_scale)
@@ -54,6 +54,7 @@ class Player():
         self.is_fall = False
         self.is_shoot = False
         self.is_knife = False
+        self.is_damage = False
 
         self.tiempo_transcurrido_animation = 0
         self.frame_rate_ms = frame_rate_ms 
@@ -137,12 +138,12 @@ class Player():
             self.move_y = 0
             self.frame = 0
 
-    def change_x(self,delta_x):
+    def change_x(self, delta_x):
         self.rect.x += delta_x
         self.collition_rect.x += delta_x
         self.ground_collition_rect.x += delta_x
 
-    def change_y(self,delta_y):
+    def change_y(self, delta_y):
         self.rect.y += delta_y
         self.collition_rect.y += delta_y
         self.ground_collition_rect.y += delta_y
@@ -152,20 +153,21 @@ class Player():
         if(self.tiempo_transcurrido_move >= self.move_rate_ms):
             self.tiempo_transcurrido_move = 0
 
-            if((self.y_start_jump - self.rect.y) > self.jump_height and self.is_jump):
+            if (self.y_start_jump - self.rect.y) > self.jump_height and self.is_jump:
                 self.move_y = 0
-          
+
             self.change_x(self.move_x)
             self.change_y(self.move_y)
 
-            if(not self.is_on_plataform(plataform_list)):
-                if(self.move_y == 0):
+            if not self.is_on_plataform(plataform_list):
+                if self.move_y == 0:
                     self.is_fall = True
                     self.change_y(self.gravity)
             else:
-                if (self.is_jump): 
+                if self.is_jump:
                     self.jump(False)
-                self.is_fall = False            
+                self.is_fall = False     
+     
 
     def is_on_plataform(self,plataform_list):
         retorno = False
@@ -207,14 +209,34 @@ class Player():
         self.do_movement(delta_ms,plataform_list)
         self.do_animation(delta_ms)
 
-        colition_enemy = pygame.sprite.spritecollide(self,self.enemy,False)
-        if colition_enemy:
-            self.lives -=1
-            print(self.lives)
+        collision_enemy = pygame.sprite.spritecollide(self, self.enemy, False)
+        if collision_enemy:
+
+            for enemy in collision_enemy:
+                self.lives -= 1
+                print(self.lives)
+                push_direction = pygame.Vector2(self.rect.center) - pygame.Vector2(enemy.rect.center)
+                push_direction.normalize_ip()
+                push_force = push_direction * 50  # Ajusta la magnitud del empuje según sea necesario
+                self.collition_rect.move_ip(push_force)
+                self.rect.move_ip(push_force)
+                self.ground_collition_rect.move_ip(push_force)
+
+            if(self.animation != self.damage_r and self.animation != self.damage_l):
+                self.frame = 0
+                self.is_damage = True
+                if(self.direction == DIRECTION_R):
+                    self.animation = self.damage_r
+                else:
+                    self.animation = self.damage_l 
+
 
         if self.lives == 0:
-            self.animation = self.dead_r
-            self.frame = 0
+                self.frame = 0
+                if(self.direction == DIRECTION_R):
+                    self.animation = self.dead_r
+                else:
+                    self.animation = self.dead_l  
 
         
         for objeto in self.bullet:
@@ -225,6 +247,7 @@ class Player():
                     self.score+=3
                     self.attack_shoot = False
                     objeto.kill()
+
 
 
     
