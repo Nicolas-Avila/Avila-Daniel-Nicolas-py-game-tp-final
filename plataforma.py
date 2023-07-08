@@ -23,3 +23,5 @@ class Plataform:
             pygame.draw.rect(screen,color=(255,200,0),rect=self.ground_collition_rect)
         
         
+
+        

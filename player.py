@@ -29,7 +29,7 @@ class Player():
         self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,15,flip=True,scale=p_scale)
 
         self.frame = 0
-        self.lives = 3
+        self.lives = 10
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -55,6 +55,7 @@ class Player():
         self.is_shoot = False
         self.is_knife = False
         self.is_damage = False
+        self.is_dead = False
 
         self.tiempo_transcurrido_animation = 0
         self.frame_rate_ms = frame_rate_ms 
@@ -68,16 +69,15 @@ class Player():
         self.interval_time_jump = interval_time_jump
 
     def walk(self,direction):
-        if(self.is_jump == False and self.is_fall == False):
-            if(self.direction != direction or (self.animation != self.walk_r and self.animation != self.walk_l)):
-                self.frame = 0
-                self.direction = direction
-                if(direction == DIRECTION_R):
-                    self.move_x = self.speed_walk
-                    self.animation = self.walk_r
-                else:
-                    self.move_x = -self.speed_walk
-                    self.animation = self.walk_l
+        if(self.direction != direction or (self.animation != self.walk_r and self.animation != self.walk_l) ):
+            self.frame = 0
+            self.direction = direction
+            if(direction == DIRECTION_R):
+                self.move_x = self.speed_walk
+                self.animation = self.walk_r
+            else:
+                self.move_x = -self.speed_walk
+                self.animation = self.walk_l
 
     def shoot(self,on_off = True):
         self.is_shoot = on_off
@@ -129,7 +129,7 @@ class Player():
         if(self.is_knife or self.is_shoot):
             return
 
-        if(self.animation != self.stay_r and self.animation != self.stay_l):
+        if(self.animation != self.stay_r and self.animation != self.stay_l and self.is_dead == False):
             if(self.direction == DIRECTION_R):
                 self.animation = self.stay_r
             else:
@@ -204,17 +204,30 @@ class Player():
             objeto.velocidad_x = -objeto.velocidad
 
         self.bullet.add(objeto)
+
  
     def update(self,delta_ms,plataform_list):
         self.do_movement(delta_ms,plataform_list)
         self.do_animation(delta_ms)
 
+        if self.lives == 0:
+            self.lives = 0
+            
+            if(self.animation != self.dead_r and self.animation != self.dead_l): 
+                self.frame += 1
+                self.is_dead = True
+                if self.direction == DIRECTION_R:
+                    self.animation = self.dead_r
+                   
+                else:
+                    self.animation = self.dead_l
+        
         collision_enemy = pygame.sprite.spritecollide(self, self.enemy, False)
         if collision_enemy:
-
+            
             for enemy in collision_enemy:
                 self.lives -= 1
-                print(self.lives)
+                print(self.lives)    
                 push_direction = pygame.Vector2(self.rect.center) - pygame.Vector2(enemy.rect.center)
                 push_direction.normalize_ip()
                 push_force = push_direction * 50  # Ajusta la magnitud del empuje según sea necesario
@@ -230,15 +243,9 @@ class Player():
                 else:
                     self.animation = self.damage_l 
 
-
-        if self.lives == 0:
-                self.frame = 0
-                if(self.direction == DIRECTION_R):
-                    self.animation = self.dead_r
-                else:
-                    self.animation = self.dead_l  
-
-        
+               
+                
+       
         for objeto in self.bullet:
             colisiones_enemigos = pygame.sprite.spritecollide(objeto, self.enemy, False)
             if colisiones_enemigos:
@@ -248,7 +255,8 @@ class Player():
                     self.attack_shoot = False
                     objeto.kill()
 
-
+      
+   
 
     
     def draw(self,screen):
@@ -265,10 +273,10 @@ class Player():
         self.tiempo_transcurrido += delta_ms
 
 
-        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]):
+        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and self.is_dead == False):
             self.walk(DIRECTION_L)
 
-        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]):
+        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and self.is_dead == False):
             self.walk(DIRECTION_R)
 
         if(not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE]):
@@ -277,8 +285,8 @@ class Player():
             self.stay()  
 
         
-        if(keys[pygame.K_SPACE]):
-            if((self.tiempo_transcurrido - self.tiempo_last_jump) > self.interval_time_jump):
+        if keys[pygame.K_SPACE] and self.is_dead == False:
+            if (self.tiempo_transcurrido - self.tiempo_last_jump) > self.interval_time_jump:
                 self.jump(True)
                 self.tiempo_last_jump = self.tiempo_transcurrido
 
@@ -288,11 +296,12 @@ class Player():
         if(not keys[pygame.K_a]):
                 self.knife(False)  
 
-        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot):
-                    self.shoot()
-                    self.lanzar_objeto()
-                    self.attack_shoot = True  
+        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot and self.is_dead == False):
+            self.move_x = 0
+            self.shoot()
+            self.lanzar_objeto()
+            self.attack_shoot = True  
         
-        if(keys[pygame.K_a] and not keys[pygame.K_s]):
+        if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False):
             self.move_x = 0
             self.knife()   

@@ -72,7 +72,8 @@ def nivel_1():
         player_1.draw(screen)
         player_1.bullet.update()
         player_1.bullet.draw(screen)
-
+       
+ 
         
 
 
