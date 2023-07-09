@@ -5,6 +5,7 @@ from enemigo import Enemy
 from plataforma import Plataform
 from bulletbn import Bullet
 from constantes import *
+from botin import Item
 import sys
 
 
@@ -26,7 +27,7 @@ imagen_fondo = pygame.transform.scale(imagen_fondo, (ANCHO_VENTANA, ALTO_VENTANA
 def nivel_1():
     enemy = pygame.sprite.Group()
     #crea pj
-    player_1 = Player(x=100,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=1.2,interval_time_jump=100,enemy = enemy)
+    player_1 = Player(x=80,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=1.2,interval_time_jump=100,enemy = enemy)
 
     #crea npc    
     enemy_list = []
@@ -46,6 +47,11 @@ def nivel_1():
     plataform_list.append(Plataform(x=800,y=360,width=50,height=50,type=13))
     plataform_list.append(Plataform(x=850,y=360,width=50,height=50,type=13))
     plataform_list.append(Plataform(x=900,y=360,width=50,height=50,type=14))
+
+    #item
+    # Crear una instancia de Item
+    item = Item(150, 400, 50, 50)
+
 
 
     while True:
@@ -73,9 +79,10 @@ def nivel_1():
         player_1.bullet.update()
         player_1.bullet.draw(screen)
        
- 
-        
 
+        item.draw(screen)
+
+       
 
 
         pygame.display.flip()

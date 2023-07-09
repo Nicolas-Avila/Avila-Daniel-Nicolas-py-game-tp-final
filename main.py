@@ -1,12 +1,8 @@
 import pygame
-
-# Dimensiones de la ventana
-ANCHO_VENTANA = 1500
-ALTO_VENTANA = 800
+from constantes import *
 
 # Inicializar Pygame
 pygame.init()
- 
 
 
 screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
@@ -18,19 +14,19 @@ fondo = pygame.transform.scale(fondo, (ANCHO_VENTANA, ALTO_VENTANA))
 
 marco = pygame.image.load("images/gui/set_gui_01/Comic_Border/Frames/Frames_Menu06_b.png")
 marco = pygame.transform.scale(marco, (600, 500))  # Ajusta el tamaño de la imagen según sea necesario
-marco_rect = marco.get_rect(center=(ANCHO_VENTANA // 2, ALTO_VENTANA // 2))
+marco_rect = marco.get_rect(center=(ANCHO_VENTANA / 2, ALTO_VENTANA / 2))
 
 marco_1_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
 marco_1_image = pygame.transform.scale(marco_1_image, (100, 100))
-marco_1_rect = pygame.Rect(490, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
+marco_1_rect = pygame.Rect(ANCHO_VENTANA / 2 -210, ALTO_VENTANA / 2-120, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 marco_2_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
 marco_2_image = pygame.transform.scale(marco_2_image, (100, 100))
-marco_2_rect = pygame.Rect(670, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
+marco_2_rect = pygame.Rect(ANCHO_VENTANA / 2-50, ALTO_VENTANA / 2-90, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
-marco_3_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element11.png")
+marco_3_image = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element12.png")
 marco_3_image = pygame.transform.scale(marco_3_image, (100, 100))
-marco_3_rect = pygame.Rect(850, 300, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
+marco_3_rect = pygame.Rect(ANCHO_VENTANA / 2+90, ALTO_VENTANA / 2-120, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 nivel_1_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element32s.png")
 nivel_2_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/Element32s.png")
@@ -38,11 +34,11 @@ nivel_3_numero = pygame.image.load("images/gui/set_gui_01/Pixel_Border/Elements/
 
 # Ajustar el tamaño de las imágenes según sea necesario
 nivel_1_numero = pygame.transform.scale(nivel_1_numero, (35, 70))
-nivel_1_rect = pygame.Rect(520, 315, 90, 90)
+nivel_1_rect = pygame.Rect(ANCHO_VENTANA / 2 -180, ALTO_VENTANA / 2-110, 90, 90)
 nivel_2_numero = pygame.transform.scale(nivel_2_numero, (70, 70))
-nivel_2_rect = pygame.Rect(685, 315, 90, 90)
+nivel_2_rect = pygame.Rect(ANCHO_VENTANA / 2-30, ALTO_VENTANA / 2-80, 90, 90)
 nivel_3_numero = pygame.transform.scale(nivel_3_numero, (70, 70))
-nivel_3_rect = pygame.Rect(865, 315, 90, 90)
+nivel_3_rect = pygame.Rect(ANCHO_VENTANA / 2+110, ALTO_VENTANA / 2-110, 90, 90)
 
 def main():
     # Lógica del juego

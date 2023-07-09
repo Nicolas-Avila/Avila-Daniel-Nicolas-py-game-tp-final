@@ -235,17 +235,17 @@ class Player():
                 self.rect.move_ip(push_force)
                 self.ground_collition_rect.move_ip(push_force)
 
-            if(self.animation != self.damage_r and self.animation != self.damage_l):
+            if(self.animation != self.damage_r and self.animation != self.damage_l and self.is_dead == False):
                 self.frame = 0
                 self.is_damage = True
                 if(self.direction == DIRECTION_R):
                     self.animation = self.damage_r
+                    self.move_x = 0
                 else:
                     self.animation = self.damage_l 
+                    self.move_x = 0
 
-               
-                
-       
+    
         for objeto in self.bullet:
             colisiones_enemigos = pygame.sprite.spritecollide(objeto, self.enemy, False)
             if colisiones_enemigos:
@@ -255,8 +255,7 @@ class Player():
                     self.attack_shoot = False
                     objeto.kill()
 
-      
-   
+
 
     
     def draw(self,screen):
