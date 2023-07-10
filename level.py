@@ -26,13 +26,14 @@ imagen_fondo = pygame.transform.scale(imagen_fondo, (ANCHO_VENTANA, ALTO_VENTANA
 
 def nivel_1():
     enemy = pygame.sprite.Group()
+    item_group = pygame.sprite.Group()
     #crea pj
-    player_1 = Player(x=80,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=1.2,interval_time_jump=100,enemy = enemy)
+    player_1 = Player(x=80,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=0.9,interval_time_jump=100,enemy = enemy, item = item_group)
 
     #crea npc    
     enemy_list = []
-    enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    enemy_list.append (Enemy(x=900,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
+    # enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
+    #enemy_list.append (Enemy(x=900,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
     enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
     enemy.add(enemy_list)        
         
@@ -50,7 +51,10 @@ def nivel_1():
 
     #item
     # Crear una instancia de Item
-    item = Item(150, 400, 50, 50)
+    item_list = []
+    item_list.append(Item(400, 400, 50, 50))
+    item_list.append(Item(200, 500, 50, 50))
+    item_group.add(item_list)
 
 
 
@@ -73,16 +77,20 @@ def nivel_1():
             enemy.update(delta_ms, plataform_list, enemy_list, index)
             enemy.draw(screen)
 
+            #if not player_1.pause:
+            enemy.bullet.update()
+            enemy.bullet.draw(screen)
+
+
+        for item in item_group:
+            item.update()
+            item.draw(screen)
         player_1.events(delta_ms,keys)
-        player_1.update(delta_ms,plataform_list)
+        player_1.update(delta_ms,plataform_list,enemy_list,player_1)
         player_1.draw(screen)
         player_1.bullet.update()
         player_1.bullet.draw(screen)
-       
-
-        item.draw(screen)
-
-       
+              
 
 
         pygame.display.flip()

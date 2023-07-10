@@ -2,9 +2,9 @@ import pygame
 from constantes import *
 from auxiliar import Auxiliar
 from bulletbn import *
-class Player():
-    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,p_scale=1,interval_time_jump=100,enemy=None) -> None:
-
+class Player(pygame.sprite.Sprite):
+    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,p_scale=1,interval_time_jump=100,enemy=None,item=None) -> None:
+        super().__init__()
         '''
         self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/stink/walk.png",15,1,scale=p_scale)[:12]
         '''
@@ -25,11 +25,11 @@ class Player():
         self.damage_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",1,3,flip=False,scale=p_scale)
         self.damage_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/damage/{0}.png",1,3,flip=True,scale=p_scale)
 
-        self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,15,flip=False,scale=p_scale)
-        self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,15,flip=True,scale=p_scale)
+        self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=False,scale=p_scale)
+        self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
 
         self.frame = 0
-        self.lives = 10
+        self.lives = 3
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -56,6 +56,12 @@ class Player():
         self.is_knife = False
         self.is_damage = False
         self.is_dead = False
+
+        self.item = item
+
+        self.invulnerable = False  # Variable de estado de invulnerabilidad
+        self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
+        self.invulnerable_duration = 600  # Duración en milisegundos de la invulnerabilidad
 
         self.tiempo_transcurrido_animation = 0
         self.frame_rate_ms = frame_rate_ms 
@@ -91,8 +97,7 @@ class Player():
                 else:
                     self.animation = self.shoot_l       
 
-    def receive_shoot(self):
-        self.lives -= 1
+
 
     def knife(self,on_off = True):
         self.is_knife = on_off
@@ -181,15 +186,30 @@ class Player():
                     break       
         return retorno                 
 
-    def do_animation(self,delta_ms):
+    def do_animation(self, delta_ms, player):
         self.tiempo_transcurrido_animation += delta_ms
-        if(self.tiempo_transcurrido_animation >= self.frame_rate_ms):
+        if self.tiempo_transcurrido_animation >= self.frame_rate_ms:
             self.tiempo_transcurrido_animation = 0
-            if(self.frame < len(self.animation) - 1):
-                self.frame += 1 
+            if self.frame < len(self.animation) - 1:
+                self.frame += 1
+            elif self.frame >= len(self.animation) - 1 :
+                if self.animation==self.dead_r or self.animation==self.dead_l:
+                    del player
+                else:
+                    self.frame=0
 
-            else: 
-                self.frame = 0
+
+
+    def recibir_ataque(self):
+        '''
+        Reduce la vida del jugador cuando es alcanzado por un ataque.
+        '''
+        current_time = pygame.time.get_ticks()
+        if not self.invulnerable or current_time - self.invulnerable_timer > self.invulnerable_duration:
+            self.lives -= 1
+            # print(self.lives)
+            self.invulnerable = True
+            self.invulnerable_timer = current_time
 
     def lanzar_objeto(self):
         '''
@@ -205,29 +225,34 @@ class Player():
 
         self.bullet.add(objeto)
 
- 
-    def update(self,delta_ms,plataform_list):
-        self.do_movement(delta_ms,plataform_list)
-        self.do_animation(delta_ms)
-
+    def dead_animation(self):
         if self.lives == 0:
-            self.lives = 0
-            
-            if(self.animation != self.dead_r and self.animation != self.dead_l): 
+    
+            if (self.animation != self.dead_r and self.animation != self.dead_l):
                 self.frame += 1
                 self.is_dead = True
                 if self.direction == DIRECTION_R:
                     self.animation = self.dead_r
-                   
+                    
                 else:
                     self.animation = self.dead_l
-        
+
+ 
+    def update(self, delta_ms, plataform_list,enemy_list,player):
+        self.do_movement(delta_ms, plataform_list)
+        self.do_animation(delta_ms,player)
+
+        if self.lives <= 0:
+            self.dead_animation()
+            
+                    
+ 
+
         collision_enemy = pygame.sprite.spritecollide(self, self.enemy, False)
         if collision_enemy:
-            
             for enemy in collision_enemy:
                 self.lives -= 1
-                print(self.lives)    
+                print(self.lives)
                 push_direction = pygame.Vector2(self.rect.center) - pygame.Vector2(enemy.rect.center)
                 push_direction.normalize_ip()
                 push_force = push_direction * 50  # Ajusta la magnitud del empuje según sea necesario
@@ -235,27 +260,35 @@ class Player():
                 self.rect.move_ip(push_force)
                 self.ground_collition_rect.move_ip(push_force)
 
-            if(self.animation != self.damage_r and self.animation != self.damage_l and self.is_dead == False):
+            if (self.animation != self.damage_r and self.animation != self.damage_l and self.is_dead == False):
                 self.frame = 0
                 self.is_damage = True
-                if(self.direction == DIRECTION_R):
+                if (self.direction == DIRECTION_R):
                     self.animation = self.damage_r
                     self.move_x = 0
                 else:
-                    self.animation = self.damage_l 
+                    self.animation = self.damage_l
                     self.move_x = 0
 
-    
         for objeto in self.bullet:
             colisiones_enemigos = pygame.sprite.spritecollide(objeto, self.enemy, False)
             if colisiones_enemigos:
                 for enemy in colisiones_enemigos:
                     enemy.receive_shoot(self.enemy)
-                    self.score+=3
+                    self.score += 3
                     self.attack_shoot = False
                     objeto.kill()
 
+        colition_item = pygame.sprite.spritecollide(self, self.item, True)  # Verifica colisión con el grupo de ítems
+        if colition_item:
+            self.lives += 1
+            print(self.lives)
 
+        for enemy in enemy_list:
+            for objeto in enemy.bullet:
+                if self.collition_rect.colliderect(objeto.rect):
+                    self.recibir_ataque()
+                    objeto.kill()
 
     
     def draw(self,screen):

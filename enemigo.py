@@ -49,6 +49,11 @@ class Enemy(pygame.sprite.Sprite):
         self.y_start_jump = 0
         self.jump_height = jump_height
 
+        #self.attack_shoot = False
+        self.bullet = pygame.sprite.Group()
+        self.attack_cooldown = 2000 
+        self.last_attack_time = pygame.time.get_ticks()
+
         self.tiempo_transcurrido = 0
         self.tiempo_last_jump = 0 # en base al tiempo transcurrido general
         self.interval_time_jump = interval_time_jump
@@ -79,10 +84,12 @@ class Enemy(pygame.sprite.Sprite):
                     if self.contador <= 50:
                         self.move_x = -self.speed_walk
                         self.animation = self.walk_l
+                        self.direction = DIRECTION_L
                         self.contador += 1 
                     elif self.contador <= 100:
                         self.move_x = self.speed_walk
                         self.animation = self.walk_r
+                        self.direction = DIRECTION_R
                         self.contador += 1
                     else:
                         self.contador = 0
@@ -124,12 +131,36 @@ class Enemy(pygame.sprite.Sprite):
                     else:
                         self.frame=0
 
+    def puede_atacar(self):
+        current_time = pygame.time.get_ticks()
+        elapsed_time = current_time - self.last_attack_time
+        return elapsed_time >= self.attack_cooldown
+
+    def lanzar_disparo(self):
+
+        objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5)
+     
+        if self.direction == DIRECTION_R:
+            objeto.velocidad_x = objeto.velocidad
+        elif self.direction == DIRECTION_L:
+            objeto.velocidad_x = -objeto.velocidad
+
+        self.bullet.add(objeto)
+
+    def atacar(self):
+       # if not pause:
+        if self.puede_atacar():
+            self.lanzar_disparo()
+            self.last_attack_time = pygame.time.get_ticks()
+
+
 
 
 
     def update(self,delta_ms,plataform_list,index,enemy_list):
         self.do_movement(delta_ms,plataform_list)
         self.do_animation(delta_ms,index,enemy_list) 
+        self.atacar()
 
     def draw(self,screen):
         
