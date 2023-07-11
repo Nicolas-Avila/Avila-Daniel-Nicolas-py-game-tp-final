@@ -6,7 +6,15 @@ from plataforma import Plataform
 from bulletbn import Bullet
 from constantes import *
 from botin import Item
+from pause import *
 import sys
+
+#pausa
+
+level = pygame.image.load("images/gui/gui/0.png")
+level = pygame.transform.scale(level, (250, 150))
+level_rect = level.get_rect(center=(ANCHO_VENTANA /2, ALTO_VENTANA/2-210))
+
 
 
 
@@ -28,13 +36,13 @@ def nivel_1():
     enemy = pygame.sprite.Group()
     item_group = pygame.sprite.Group()
     #crea pj
-    player_1 = Player(x=80,y=400,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=0.9,interval_time_jump=100,enemy = enemy, item = item_group)
+    player_1 = Player(x=100,y=590,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=0.9,interval_time_jump=100,enemy = enemy, item = item_group)
 
     #crea npc    
     enemy_list = []
     # enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    # enemy_list.append (Enemy(x=900,y=100,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=1,interval_time_jump=300))
-    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=2,interval_time_jump=300))
+    enemy_list.append (Enemy(x=900,y=100,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=1,interval_time_jump=300))
+    enemy_list.append (Enemy(x=500,y=600,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=0.9,interval_time_jump=300))
     enemy.add(enemy_list)        
         
     #crea plataforma
@@ -60,10 +68,19 @@ def nivel_1():
 
 
     while True:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if marco_1_rect_nivel.collidepoint(event.pos):
+                    current_level = 1
+                elif marco_2_rect_nivel.collidepoint(event.pos):
+                    current_level = 2
+                elif marco_3_rect_nivel.collidepoint(event.pos):
+                    player_1.pause = False
 
         keys = pygame.key.get_pressed()
 
@@ -78,8 +95,8 @@ def nivel_1():
             enemy.update(delta_ms, plataform_list, enemy_list, index,player_1)
             enemy.draw(screen)
 
-            #if not player_1.pause:
-            enemy.bullet.update()
+            if not player_1.pause:
+                enemy.bullet.update()
             enemy.bullet.draw(screen)
 
 
@@ -102,8 +119,10 @@ def nivel_1():
         font=pygame.font.SysFont("arial", 40, True)
         lives_text = font.render("Lives:", True, (255, 255, 255))
         screen.blit(lives_text, (10, 5))
-              
-
+            
+        if player_1.pause == True:
+            marco_1_rect_nivel, marco_2_rect_nivel, marco_3_rect_nivel = pause(screen)
+ 
 
         pygame.display.flip()
 

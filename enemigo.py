@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.num_enemy == 1:    
             self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,flip=True,scale=p_scale)
             self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,scale=p_scale)
-            self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/{0}.png",1,8,scale=p_scale)
+            # self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/{0}.png",1,8,scale=p_scale)
             # self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/IDLE_00{0}.png",0,7,flip=True,scale=p_scale)
 
             self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",1,8,flip=True,scale=p_scale)
@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
             self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",1,10,scale=p_scale)
         elif self.num_enemy == 2:
 
-            self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
+            # self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
             self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=False,scale=p_scale)
             self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=True,scale=p_scale)
             self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=False,scale=p_scale)
@@ -38,7 +38,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed_run =  speed_run
         self.gravity = gravity
         self.jump_power = jump_power
-        self.animation = self.stay_r
+        self.animation = self.walk_r
         self.direction = DIRECTION_R
         self.image = self.animation[self.frame]
         self.rect = self.image.get_rect()
@@ -85,6 +85,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def do_movement(self,delta_ms,plataform_list):
         self.tiempo_transcurrido_move += delta_ms
+    
         if self.lives > 0 :
             if(self.tiempo_transcurrido_move >= self.move_rate_ms):
                 self.tiempo_transcurrido_move = 0
@@ -93,6 +94,7 @@ class Enemy(pygame.sprite.Sprite):
                     if(self.move_y == 0):
                         self.is_fall = True
                         self.change_y(self.gravity)
+                        self.contador = 0
                 else:
                     self.is_fall = False
                     self.change_x(self.move_x)
@@ -134,6 +136,7 @@ class Enemy(pygame.sprite.Sprite):
         
 
     def do_animation(self,delta_ms, enemy_list, index):
+           
         self.tiempo_transcurrido_animation += delta_ms
         if(self.tiempo_transcurrido_animation >= self.frame_rate_ms):
             self.tiempo_transcurrido_animation = 0
@@ -145,28 +148,31 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     self.frame=0
 
-    def puede_atacar(self):
-        current_time = pygame.time.get_ticks()
-        elapsed_time = current_time - self.last_attack_time
-        return elapsed_time >= self.attack_cooldown
+    def puede_atacar(self,player):
+         
+         if player.rect.y == self.rect.y:    
+            current_time = pygame.time.get_ticks()
+            elapsed_time = current_time - self.last_attack_time
+            return elapsed_time >= self.attack_cooldown
 
     def lanzar_disparo(self):
-        if self.num_enemy == 2:
-            objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="enemy")
-            
-            if self.direction == DIRECTION_R:
-                objeto.velocidad_x = objeto.velocidad
+           
+            if self.num_enemy == 2:
+                objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="enemy")
                 
-            elif self.direction == DIRECTION_L:
-                objeto.velocidad_x = -objeto.velocidad
-            
-            self.bullet.add(objeto)
+                if self.direction == DIRECTION_R:
+                    objeto.velocidad_x = objeto.velocidad
+                    
+                elif self.direction == DIRECTION_L:
+                    objeto.velocidad_x = -objeto.velocidad
+                
+                self.bullet.add(objeto)
 
     def atacar(self,player):
-       # if not pause:
-        if self.puede_atacar():
-            self.lanzar_disparo()
-            self.last_attack_time = pygame.time.get_ticks()
+        if not player.pause:
+            if self.puede_atacar(player):
+                self.lanzar_disparo()
+                self.last_attack_time = pygame.time.get_ticks()
 
     def check_collision(self,player):
         if self.num_enemy == 1:
@@ -192,10 +198,11 @@ class Enemy(pygame.sprite.Sprite):
 
 
     def update(self,delta_ms,plataform_list,index,enemy_list,player):
-        self.do_movement(delta_ms,plataform_list)
-        self.do_animation(delta_ms,index,enemy_list)
-        self.check_collision(player)
-        self.atacar(player)
+        if not player.pause:
+            self.do_movement(delta_ms,plataform_list)
+            self.do_animation(delta_ms,index,enemy_list)
+            self.check_collision(player)
+            self.atacar(player)
 
     def draw(self,screen):
         self.image = self.animation[self.frame]

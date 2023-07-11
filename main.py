@@ -26,7 +26,7 @@ marco_1_image = pygame.transform.scale(marco_1_image, (150, 150))
 marco_1_rect = pygame.Rect(ANCHO_VENTANA / 2 -210, ALTO_VENTANA / 2-110, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 marco_2_image = pygame.image.load("images/gui/gui/num2.png")
-marco_2_image = pygame.transform.scale(marco_2_image, (150, 150))
+marco_2_image = pygame.transform.scale(marco_2_image,(100,100))
 marco_2_rect = pygame.Rect(ANCHO_VENTANA / 2+70, ALTO_VENTANA / 2-110, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 marco_3_image = pygame.image.load("images/gui/gui/num3.png")
@@ -62,7 +62,7 @@ def main():
         elif current_level == 3:
             pass
         # Añade más niveles según sea necesario
-
+    
         screen.blit(fondo, (0, 0))
         screen.blit(marco, marco_rect)
         screen.blit(marco_1_image, marco_1_rect)

@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         '''
         self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/stink/walk.png",15,1,scale=p_scale)[:12]
         '''
-        
+
         self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
         self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=True,scale=p_scale)
         self.jump_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/jump/{0}.png",0,9,flip=False,scale=p_scale)
@@ -56,6 +56,7 @@ class Player(pygame.sprite.Sprite):
         self.is_knife = False
         self.is_damage = False
         self.is_dead = False
+        self.pause = False
 
         self.item = item
         self.type_item = pygame.sprite.Group(item)
@@ -232,6 +233,7 @@ class Player(pygame.sprite.Sprite):
         '''
         Lanza un objeto desde la posición central del jugador en la dirección actual.
         '''        
+        
         objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="player")
         
 
@@ -283,10 +285,11 @@ class Player(pygame.sprite.Sprite):
 
  
     def update(self, delta_ms, plataform_list,enemy_list,player):
-        self.verificar_colision_enemigo(enemy_list)
-        self.do_movement(delta_ms, plataform_list)
-        self.do_animation(delta_ms,player)
-        # self.hit_player(1)
+        if not self.pause:
+            self.verificar_colision_enemigo(enemy_list)
+            self.do_movement(delta_ms, plataform_list)
+            self.do_animation(delta_ms,player)
+        
 
         if self.lives <= 0:
             self.dead_animation()
@@ -324,6 +327,7 @@ class Player(pygame.sprite.Sprite):
                     if self.collition_rect.colliderect(objeto.rect):
                         self.recibir_ataque()
                         objeto.kill()
+        
 
     
     def draw(self,screen):
@@ -342,35 +346,40 @@ class Player(pygame.sprite.Sprite):
         self.tiempo_transcurrido += delta_ms
 
 
-        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and self.is_dead == False):
+        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause):
             self.walk(DIRECTION_L)
 
-        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and self.is_dead == False):
+        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause):
             self.walk(DIRECTION_R)
 
-        if(not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE]):
+        if(not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause):
             self.stay()
-        if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE]):
+        if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause):
             self.stay()  
 
         
-        if keys[pygame.K_SPACE] and self.is_dead == False:
+        if keys[pygame.K_SPACE] and self.is_dead == False and not self.pause:
             if (self.tiempo_transcurrido - self.tiempo_last_jump) > self.interval_time_jump:
                 self.jump(True)
                 self.tiempo_last_jump = self.tiempo_transcurrido
 
-        if(not keys[pygame.K_a]):
+        if(not keys[pygame.K_a] and not self.pause):
                 self.shoot(False)  
 
-        if(not keys[pygame.K_a]):
+        if(not keys[pygame.K_a] and not self.pause):
                 self.knife(False)  
 
-        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot and self.is_dead == False):
+        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot and self.is_dead == False and not self.pause):
             self.move_x = 0
             self.shoot()
             self.lanzar_objeto()
             self.attack_shoot = True  
         
-        if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False):
+        if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False and not self.pause):
             self.move_x = 0
             self.knife()   
+
+        if(keys[pygame.K_ESCAPE]):
+            self.pause = True
+
+        
