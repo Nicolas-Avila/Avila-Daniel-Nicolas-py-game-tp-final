@@ -8,6 +8,7 @@ from constantes import *
 from botin import Item
 from pause import *
 import sys
+from main import *
 
 #pausa
 
@@ -41,8 +42,8 @@ def nivel_1():
     #crea npc    
     enemy_list = []
     # enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    enemy_list.append (Enemy(x=900,y=100,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=1,interval_time_jump=300))
-    enemy_list.append (Enemy(x=500,y=600,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=0.9,interval_time_jump=300))
+    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=1,interval_time_jump=300))
+    enemy_list.append (Enemy(x=980,y=100,speed_walk=3,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=0.9,interval_time_jump=300))
     enemy.add(enemy_list)        
         
     #crea plataforma
@@ -55,7 +56,10 @@ def nivel_1():
     plataform_list.append(Plataform(x=750,y=360,width=50,height=50,type=12))
     plataform_list.append(Plataform(x=800,y=360,width=50,height=50,type=13))
     plataform_list.append(Plataform(x=850,y=360,width=50,height=50,type=13))
-    plataform_list.append(Plataform(x=900,y=360,width=50,height=50,type=14))
+    plataform_list.append(Plataform(x=900,y=360,width=50,height=50,type=13))
+    plataform_list.append(Plataform(x=950,y=360,width=50,height=50,type=13))
+    plataform_list.append(Plataform(x=1000,y=360,width=50,height=50,type=13))
+    plataform_list.append(Plataform(x=1050,y=360,width=50,height=50,type=14))
 
    
     #item
@@ -67,6 +71,8 @@ def nivel_1():
 
 
 
+
+
     while True:
 
         for event in pygame.event.get():
@@ -75,12 +81,20 @@ def nivel_1():
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if marco_1_rect_nivel.collidepoint(event.pos):
-                    current_level = 1
-                elif marco_2_rect_nivel.collidepoint(event.pos):
-                    current_level = 2
-                elif marco_3_rect_nivel.collidepoint(event.pos):
-                    player_1.pause = False
+                if marco_1_rect_nivel is not None and marco_2_rect_nivel is not None :
+                    if marco_1_rect_nivel.collidepoint(event.pos):
+                        main()
+                    elif marco_2_rect_nivel.collidepoint(event.pos):
+                        player_1.pause = False
+
+                if marco_1_rect_win is not None and marco_2_rect_win is not None:
+                    if marco_1_rect_win.collidepoint(event.pos):
+                        print('sos bueno')
+                    if marco_2_rect_win.collidepoint(event.pos):
+                       main()
+                
+
+                        
 
         keys = pygame.key.get_pressed()
 
@@ -120,8 +134,19 @@ def nivel_1():
         lives_text = font.render("Lives:", True, (255, 255, 255))
         screen.blit(lives_text, (10, 5))
             
+
+
+        marco_1_rect_nivel = None
+        marco_2_rect_nivel = None
+
+        marco_1_rect_win = None
+        marco_2_rect_win = None
+
+
         if player_1.pause == True:
-            marco_1_rect_nivel, marco_2_rect_nivel, marco_3_rect_nivel = pause(screen)
+            marco_1_rect_nivel, marco_2_rect_nivel = pause(screen)
+        if player_1.win == True:
+            marco_1_rect_win, marco_2_rect_win = win(screen)
  
 
         pygame.display.flip()

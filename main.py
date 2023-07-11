@@ -6,8 +6,6 @@ pygame.init()
 
 
 screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
-pygame.display.set_caption("Ingrese Nivel")
-
 
 fondo = pygame.image.load("images/locations/castle.png").convert()
 fondo = pygame.transform.scale(fondo, (ANCHO_VENTANA, ALTO_VENTANA))
@@ -15,7 +13,6 @@ fondo = pygame.transform.scale(fondo, (ANCHO_VENTANA, ALTO_VENTANA))
 level = pygame.image.load("images/gui/gui/0.png")
 level = pygame.transform.scale(level, (250, 150))
 level_rect = level.get_rect(center=(ANCHO_VENTANA /2, ALTO_VENTANA/2-210))
-
 
 marco = pygame.image.load("images/gui/gui/23.png")
 marco = pygame.transform.scale(marco, (600, 500))  # Ajusta el tamaño de la imagen según sea necesario
@@ -26,7 +23,7 @@ marco_1_image = pygame.transform.scale(marco_1_image, (150, 150))
 marco_1_rect = pygame.Rect(ANCHO_VENTANA / 2 -210, ALTO_VENTANA / 2-110, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 marco_2_image = pygame.image.load("images/gui/gui/num2.png")
-marco_2_image = pygame.transform.scale(marco_2_image,(100,100))
+marco_2_image = pygame.transform.scale(marco_2_image,(150,150))
 marco_2_rect = pygame.Rect(ANCHO_VENTANA / 2+70, ALTO_VENTANA / 2-110, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
 
 marco_3_image = pygame.image.load("images/gui/gui/num3.png")

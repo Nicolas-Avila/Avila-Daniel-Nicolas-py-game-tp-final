@@ -29,6 +29,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def update(self):
+        
         self.rect.x += self.velocidad
         self.frame += 1
         if self.frame >= len(self.animaciones):

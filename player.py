@@ -57,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.is_damage = False
         self.is_dead = False
         self.pause = False
+        self.win = False
 
         self.item = item
         self.type_item = pygame.sprite.Group(item)
@@ -89,6 +90,7 @@ class Player(pygame.sprite.Sprite):
                 self.animation = self.walk_l
 
     def shoot(self,on_off = True):
+
         self.is_shoot = on_off
         if(on_off == True and self.is_jump == False and self.is_fall == False):
 
@@ -280,8 +282,8 @@ class Player(pygame.sprite.Sprite):
                     self.recibir_ataque()
                     if self.direction == DIRECTION_R:
                         self.change_x(-50)
-                    else:
-                        self.change_x(-50)
+                    elif self.direction == DIRECTION_L:
+                        self.change_x(+50)
 
  
     def update(self, delta_ms, plataform_list,enemy_list,player):
@@ -303,15 +305,16 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.animation = self.damage_l
                     self.move_x = 0
-
-        for objeto in self.bullet:
-            colisiones_enemigos = pygame.sprite.spritecollide(objeto, self.enemy, False)
-            if colisiones_enemigos:
-                for enemy in colisiones_enemigos:
-                    enemy.receive_shoot(self.enemy)
-                    self.score += 3
-                    self.attack_shoot = False
-                    objeto.kill()
+        
+        if not self.pause:
+            for objeto in self.bullet:
+                colisiones_enemigos = pygame.sprite.spritecollide(objeto, self.enemy, False)
+                if colisiones_enemigos:
+                    for enemy in colisiones_enemigos:
+                        enemy.receive_shoot(self.enemy)
+                        self.score += 3
+                        self.attack_shoot = False
+                        objeto.kill()
 
         colision_items = pygame.sprite.spritecollide(self, self.item, True)  # Verifica colisión con el grupo de ítems
         
@@ -327,6 +330,9 @@ class Player(pygame.sprite.Sprite):
                     if self.collition_rect.colliderect(objeto.rect):
                         self.recibir_ataque()
                         objeto.kill()
+
+        if len(enemy_list) == 0:
+            self.win = True
         
 
     
