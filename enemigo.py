@@ -4,15 +4,29 @@ from auxiliar import Auxiliar
 from bulletbn import *
 class Enemy(pygame.sprite.Sprite):
     
-    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,p_scale=1,interval_time_jump=100) -> None:
+    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,num_enemy,p_scale=1,interval_time_jump=100) -> None:
         super().__init__()
-        self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/WALK/WALK_00{0}.png",0,7,scale=p_scale)
-        self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/WALK/WALK_00{0}.png",0,7,flip=True,scale=p_scale)
-        self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/IDLE/IDLE_00{0}.png",0,7,scale=p_scale)
-        self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/IDLE/IDLE_00{0}.png",0,7,flip=True,scale=p_scale)
+        self.num_enemy = num_enemy
 
-        self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/DIE/DIE_00{0}.png",0,6,scale=p_scale)
-        self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/ork_sword/DIE/DIE_00{0}.png",0,6,flip=True,scale=p_scale)
+        if self.num_enemy == 1:    
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,flip=True,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,scale=p_scale)
+            self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/{0}.png",1,8,scale=p_scale)
+            # self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/IDLE_00{0}.png",0,7,flip=True,scale=p_scale)
+
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",1,8,flip=True,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",1,8,scale=p_scale)
+
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",1,10,flip=True,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",1,10,scale=p_scale)
+        elif self.num_enemy == 2:
+
+            self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=False,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=True,scale=p_scale)
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=False,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
+
 
         self.contador = 0
         self.frame = 0
@@ -31,7 +45,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
        
-        self.collition_rect = pygame.Rect(x+self.rect.width/4,y,self.rect.width/2,self.rect.height)
+        self.collition_rect = pygame.Rect(x+self.rect.width/2,y,self.rect.width/3,self.rect.height)
         self.ground_collition_rect = pygame.Rect(self.collition_rect)
         self.ground_collition_rect.height = GROUND_COLLIDE_H
         self.ground_collition_rect.y = y + self.rect.height - GROUND_COLLIDE_H
@@ -41,6 +55,7 @@ class Enemy(pygame.sprite.Sprite):
         self.is_shoot = False
         self.is_knife = False
         self.is_dead = False
+        self.check_collition = False
 
         self.tiempo_transcurrido_animation = 0
         self.frame_rate_ms = frame_rate_ms 
@@ -70,7 +85,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def do_movement(self,delta_ms,plataform_list):
         self.tiempo_transcurrido_move += delta_ms
-        if self.lives > 0:
+        if self.lives > 0 :
             if(self.tiempo_transcurrido_move >= self.move_rate_ms):
                 self.tiempo_transcurrido_move = 0
 
@@ -86,7 +101,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.animation = self.walk_l
                         self.direction = DIRECTION_L
                         self.contador += 1 
-                    elif self.contador <= 100:
+                    elif self.contador <= 100 :
                         self.move_x = self.speed_walk
                         self.animation = self.walk_r
                         self.direction = DIRECTION_R
@@ -119,17 +134,16 @@ class Enemy(pygame.sprite.Sprite):
         
 
     def do_animation(self,delta_ms, enemy_list, index):
-            self.tiempo_transcurrido_animation += delta_ms
-            if(self.tiempo_transcurrido_animation >= self.frame_rate_ms):
-                self.tiempo_transcurrido_animation = 0
-                if(self.frame < len(self.animation) - 1):
-                    self.frame += 1 
-                    #print(self.frame)
-                elif self.frame >= len(self.animation) - 1 :
-                    if self.animation==self.dead_r or self.animation==self.dead_l:
-                        del enemy_list[index]
-                    else:
-                        self.frame=0
+        self.tiempo_transcurrido_animation += delta_ms
+        if(self.tiempo_transcurrido_animation >= self.frame_rate_ms):
+            self.tiempo_transcurrido_animation = 0
+            if(self.frame < len(self.animation) - 1):
+                self.frame += 1           
+            elif self.frame >= len(self.animation) - 1 :
+                if self.lives <= 0:
+                    del enemy_list[index]
+                else:
+                    self.frame=0
 
     def puede_atacar(self):
         current_time = pygame.time.get_ticks()
@@ -137,42 +151,64 @@ class Enemy(pygame.sprite.Sprite):
         return elapsed_time >= self.attack_cooldown
 
     def lanzar_disparo(self):
+        if self.num_enemy == 2:
+            objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="enemy")
+            
+            if self.direction == DIRECTION_R:
+                objeto.velocidad_x = objeto.velocidad
+                
+            elif self.direction == DIRECTION_L:
+                objeto.velocidad_x = -objeto.velocidad
+            
+            self.bullet.add(objeto)
 
-        objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5)
-     
-        if self.direction == DIRECTION_R:
-            objeto.velocidad_x = objeto.velocidad
-        elif self.direction == DIRECTION_L:
-            objeto.velocidad_x = -objeto.velocidad
-
-        self.bullet.add(objeto)
-
-    def atacar(self):
+    def atacar(self,player):
        # if not pause:
         if self.puede_atacar():
             self.lanzar_disparo()
             self.last_attack_time = pygame.time.get_ticks()
 
+    def check_collision(self,player):
+        if self.num_enemy == 1:
+            if player.is_dead == False:
+                if self.rect.colliderect(player.rect):  # Colisión detectada
+                    if self.direction == DIRECTION_R:
+                        self.check_collition == True
+                        self.move_x = 0
+                        self.animation = self.attack_r
+                        player.lives-=1
+                        player.score -=1
+                        
+                        print(player.lives)
+                    elif self.direction == DIRECTION_L:
+                        self.check_collition == True
+                        self.move_x = 0
+                        self.animation = self.attack_l
+                        player.lives-=1
+                        player.score -=1
+                    
 
 
 
 
-    def update(self,delta_ms,plataform_list,index,enemy_list):
+    def update(self,delta_ms,plataform_list,index,enemy_list,player):
         self.do_movement(delta_ms,plataform_list)
-        self.do_animation(delta_ms,index,enemy_list) 
-        self.atacar()
+        self.do_animation(delta_ms,index,enemy_list)
+        self.check_collision(player)
+        self.atacar(player)
 
     def draw(self,screen):
+        self.image = self.animation[self.frame]
+        screen.blit(self.image,self.rect)
         
         if(DEBUG):
             pygame.draw.rect(screen,color=(255,0 ,0),rect=self.collition_rect)
             pygame.draw.rect(screen,color=(255,255,0),rect=self.ground_collition_rect)
         
-        self.image = self.animation[self.frame]
-        screen.blit(self.image,self.rect)
 
     def receive_shoot(self,enemy_list):
         self.lives -= 1
+        
         print(self.lives)
         if self.lives <= 0:
             self.lives = 0

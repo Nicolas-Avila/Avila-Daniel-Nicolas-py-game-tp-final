@@ -28,13 +28,13 @@ def nivel_1():
     enemy = pygame.sprite.Group()
     item_group = pygame.sprite.Group()
     #crea pj
-    player_1 = Player(x=80,y=500,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=0.9,interval_time_jump=100,enemy = enemy, item = item_group)
+    player_1 = Player(x=80,y=400,speed_walk=10,speed_run=10,gravity=10,jump_power=40,frame_rate_ms=150,move_rate_ms=60,jump_height=140,p_scale=0.9,interval_time_jump=100,enemy = enemy, item = item_group)
 
     #crea npc    
     enemy_list = []
     # enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    #enemy_list.append (Enemy(x=900,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
+    # enemy_list.append (Enemy(x=900,y=100,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=1,interval_time_jump=300))
+    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=2,interval_time_jump=300))
     enemy.add(enemy_list)        
         
     #crea plataforma
@@ -49,11 +49,12 @@ def nivel_1():
     plataform_list.append(Plataform(x=850,y=360,width=50,height=50,type=13))
     plataform_list.append(Plataform(x=900,y=360,width=50,height=50,type=14))
 
+   
     #item
     # Crear una instancia de Item
     item_list = []
-    item_list.append(Item(400, 400, 50, 50))
-    item_list.append(Item(200, 500, 50, 50))
+    item_list.append(Item(400, 400, 50, 50,type_item= 1))
+    item_list.append(Item(200, 500, 50, 50, type_item= 2))
     item_group.add(item_list)
 
 
@@ -74,7 +75,7 @@ def nivel_1():
             plataforma.draw(screen)
 
         for index, enemy in enumerate(enemy_list):
-            enemy.update(delta_ms, plataform_list, enemy_list, index)
+            enemy.update(delta_ms, plataform_list, enemy_list, index,player_1)
             enemy.draw(screen)
 
             #if not player_1.pause:
@@ -90,6 +91,17 @@ def nivel_1():
         player_1.draw(screen)
         player_1.bullet.update()
         player_1.bullet.draw(screen)
+
+
+        if player_1.score <= 0:
+            player_1.score = 0
+
+        font_score=pygame.font.SysFont("comicsans", 40, True)
+        score_text = font_score.render("Score: " + str(player_1.score), True, (255, 255, 255))
+        screen.blit(score_text, (600, 5))
+        font=pygame.font.SysFont("arial", 40, True)
+        lives_text = font.render("Lives:", True, (255, 255, 255))
+        screen.blit(lives_text, (10, 5))
               
 
 

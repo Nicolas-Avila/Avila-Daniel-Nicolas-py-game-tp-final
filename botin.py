@@ -3,11 +3,15 @@ from constantes import *
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height,type_item=None):
         super().__init__()
         self.width = width
         self.height = height
-        self.image = pygame.image.load("images/item/38.png")
+        self.type_item = type_item
+        if self.type_item == 1:
+            self.image = pygame.image.load("images/item/38.png")
+        elif self.type_item == 2:
+            self.image = pygame.image.load("images/item/39.png")
         self.image = pygame.transform.scale(self.image,(self.width,self.height))
         self.rect = self.image.get_rect()
         self.rect.x = x

@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
 
         self.frame = 0
-        self.lives = 3
+        self.lives = 5
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -58,6 +58,8 @@ class Player(pygame.sprite.Sprite):
         self.is_dead = False
 
         self.item = item
+        self.type_item = pygame.sprite.Group(item)
+        
 
         self.invulnerable = False  # Variable de estado de invulnerabilidad
         self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
@@ -106,8 +108,10 @@ class Player(pygame.sprite.Sprite):
                 self.frame = 0
                 if(self.direction == DIRECTION_R):
                     self.animation = self.knife_r
+                    self.frame = 0
                 else:
-                    self.animation = self.knife_l      
+                    self.animation = self.knife_l    
+                    self.frame = 0  
 
     def jump(self,on_off = True):
         if(on_off and self.is_jump == False and self.is_fall == False):
@@ -120,10 +124,12 @@ class Player(pygame.sprite.Sprite):
                 self.move_x = int(self.move_x / 1)
                 self.move_y = -self.jump_power
                 self.animation = self.jump_r
+                self.frame = 0
             else:
                 self.move_x = int(self.move_x / 1)
                 self.move_y = -self.jump_power
                 self.animation = self.jump_l
+                self.frame = 0
             
 
         if(on_off == False and self.is_fall == True):
@@ -207,15 +213,26 @@ class Player(pygame.sprite.Sprite):
         current_time = pygame.time.get_ticks()
         if not self.invulnerable or current_time - self.invulnerable_timer > self.invulnerable_duration:
             self.lives -= 1
+            self.score -=2
             # print(self.lives)
             self.invulnerable = True
             self.invulnerable_timer = current_time
+        if self.is_dead == False:
+            if (self.animation != self.damage_r and self.animation != self.damage_l and self.is_dead == False):
+                self.frame = 0
+                self.is_damage = True
+                if (self.direction == DIRECTION_R):
+                    self.animation = self.damage_r
+                    self.move_x = 0
+                else:
+                    self.animation = self.damage_l
+                    self.move_x = 0
 
     def lanzar_objeto(self):
         '''
         Lanza un objeto desde la posición central del jugador en la dirección actual.
         '''        
-        objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5)
+        objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="player")
         
 
         if self.direction == DIRECTION_R:
@@ -226,40 +243,54 @@ class Player(pygame.sprite.Sprite):
         self.bullet.add(objeto)
 
     def dead_animation(self):
-        if self.lives == 0:
-    
-            if (self.animation != self.dead_r and self.animation != self.dead_l):
-                self.frame += 1
-                self.is_dead = True
-                if self.direction == DIRECTION_R:
-                    self.animation = self.dead_r
+        if self.is_dead == False:
+            if self.lives <= 0:
+                self.move_x = 0
+                if (self.animation != self.dead_r and self.animation != self.dead_l):
+                    self.frame += 1
+                    self.is_dead = True
+                    if self.direction == DIRECTION_R:
+                        self.animation = self.dead_r
+                    else:
+                        self.animation = self.dead_l
                     
-                else:
-                    self.animation = self.dead_l
+
+
+
+    def draw_hearts(self, screen, scale):
+        heart_image = pygame.image.load("images/item/38.png")
+        heart_width = heart_image.get_width() * scale
+        heart_height = heart_image.get_height() * scale
+        spacing = 5
+        x = ANCHO_VENTANA/2-599
+        y = ALTO_VENTANA/2-390
+        for _ in range(self.lives):
+            heart_scaled = pygame.transform.scale(heart_image, (heart_width, heart_height))
+            screen.blit(heart_scaled, (x, y))
+            x += heart_width + spacing
+    
+
+
+    def verificar_colision_enemigo(self, enemy_list):
+        if self.is_dead == False:
+            for enemigo in enemy_list:
+                if self.rect.colliderect(enemigo.rect):
+                    self.recibir_ataque()
+                    if self.direction == DIRECTION_R:
+                        self.change_x(-50)
+                    else:
+                        self.change_x(-50)
 
  
     def update(self, delta_ms, plataform_list,enemy_list,player):
+        self.verificar_colision_enemigo(enemy_list)
         self.do_movement(delta_ms, plataform_list)
         self.do_animation(delta_ms,player)
+        # self.hit_player(1)
 
         if self.lives <= 0:
             self.dead_animation()
             
-                    
- 
-
-        collision_enemy = pygame.sprite.spritecollide(self, self.enemy, False)
-        if collision_enemy:
-            for enemy in collision_enemy:
-                self.lives -= 1
-                print(self.lives)
-                push_direction = pygame.Vector2(self.rect.center) - pygame.Vector2(enemy.rect.center)
-                push_direction.normalize_ip()
-                push_force = push_direction * 50  # Ajusta la magnitud del empuje según sea necesario
-                self.collition_rect.move_ip(push_force)
-                self.rect.move_ip(push_force)
-                self.ground_collition_rect.move_ip(push_force)
-
             if (self.animation != self.damage_r and self.animation != self.damage_l and self.is_dead == False):
                 self.frame = 0
                 self.is_damage = True
@@ -279,19 +310,25 @@ class Player(pygame.sprite.Sprite):
                     self.attack_shoot = False
                     objeto.kill()
 
-        colition_item = pygame.sprite.spritecollide(self, self.item, True)  # Verifica colisión con el grupo de ítems
-        if colition_item:
-            self.lives += 1
-            print(self.lives)
-
-        for enemy in enemy_list:
-            for objeto in enemy.bullet:
-                if self.collition_rect.colliderect(objeto.rect):
-                    self.recibir_ataque()
-                    objeto.kill()
+        colision_items = pygame.sprite.spritecollide(self, self.item, True)  # Verifica colisión con el grupo de ítems
+        
+        if self.is_dead == False:
+            for item in colision_items:
+                if item.type_item == 1:
+                    self.lives += 1
+                elif item.type_item == 2:
+                    self.score += 999
+            
+            for enemy in enemy_list:
+                for objeto in enemy.bullet:
+                    if self.collition_rect.colliderect(objeto.rect):
+                        self.recibir_ataque()
+                        objeto.kill()
 
     
     def draw(self,screen):
+
+        self.draw_hearts(screen,0.08)
         
         if(DEBUG):
             pygame.draw.rect(screen,color=(255,0 ,0),rect=self.collition_rect)
