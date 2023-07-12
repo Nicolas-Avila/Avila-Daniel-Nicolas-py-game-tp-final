@@ -42,7 +42,7 @@ def nivel_1():
     #crea npc    
     enemy_list = []
     # enemy_list.append (Enemy(x=450,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300))
-    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=1,interval_time_jump=300))
+    enemy_list.append (Enemy(x=600,y=400,speed_walk=6,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 1,p_scale=1.4,interval_time_jump=300))
     enemy_list.append (Enemy(x=980,y=100,speed_walk=3,speed_run=5,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,num_enemy = 2,p_scale=0.9,interval_time_jump=300))
     enemy.add(enemy_list)        
         
@@ -89,9 +89,16 @@ def nivel_1():
 
                 if marco_1_rect_win is not None and marco_2_rect_win is not None:
                     if marco_1_rect_win.collidepoint(event.pos):
-                        print('sos bueno')
+                        main()
                     if marco_2_rect_win.collidepoint(event.pos):
-                       main()
+                    #    next_level 
+                     pass
+
+                if marco_5_rect_win is not None and marco_6_rect_win is not None:
+                    if marco_5_rect_win.collidepoint(event.pos):
+                        main()
+                    if marco_6_rect_win.collidepoint(event.pos):
+                       nivel_1()
                 
 
                         
@@ -142,11 +149,15 @@ def nivel_1():
         marco_1_rect_win = None
         marco_2_rect_win = None
 
+        marco_5_rect_win=None
+        marco_6_rect_win=None
 
         if player_1.pause == True:
-            marco_1_rect_nivel, marco_2_rect_nivel = pause(screen)
+            marco_1_rect_nivel, marco_2_rect_nivel,pause_rect = pause(screen)
         if player_1.win == True:
             marco_1_rect_win, marco_2_rect_win = win(screen)
+        if player_1.is_dead == True:
+            marco_5_rect_win,marco_6_rect_win,dead_rect = dead_screen(screen)
  
 
         pygame.display.flip()

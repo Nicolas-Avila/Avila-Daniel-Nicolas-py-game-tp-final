@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
 
         self.frame = 0
-        self.lives = 5
+        self.lives = 2
         self.score = 0
         self.move_x = 0
         self.move_y = 0

@@ -150,10 +150,26 @@ class Enemy(pygame.sprite.Sprite):
 
     def puede_atacar(self,player):
          
-         if player.rect.y == self.rect.y:    
-            current_time = pygame.time.get_ticks()
-            elapsed_time = current_time - self.last_attack_time
-            return elapsed_time >= self.attack_cooldown
+        if player.rect.y == self.rect.y:
+            if player.rect.x > self.rect.x and self.direction == DIRECTION_R:
+                # El enemigo está a la derecha del jugador
+                current_time = pygame.time.get_ticks()
+                elapsed_time = current_time - self.last_attack_time
+                if elapsed_time >= self.attack_cooldown:
+                    # Realizar el ataque
+                    self.last_attack_time = current_time
+                    return True
+
+            elif player.rect.x < self.rect.x and self.direction == DIRECTION_L:
+                # El enemigo está a la izquierda del jugador
+                current_time = pygame.time.get_ticks()
+                elapsed_time = current_time - self.last_attack_time
+                if elapsed_time >= self.attack_cooldown:
+                    # Realizar el ataque
+                    self.last_attack_time = current_time
+                    return True
+
+        return False
 
     def lanzar_disparo(self):
            
@@ -183,7 +199,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.move_x = 0
                         self.animation = self.attack_r
                         player.lives-=1
-                        player.score -=1
+                        
                         
                         print(player.lives)
                     elif self.direction == DIRECTION_L:
@@ -191,7 +207,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.move_x = 0
                         self.animation = self.attack_l
                         player.lives-=1
-                        player.score -=1
+                        
                     
 
 
