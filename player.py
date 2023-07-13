@@ -386,6 +386,10 @@ class Player(pygame.sprite.Sprite):
             self.shoot()
             self.lanzar_objeto()
             self.attack_shoot = True  
+            sonido_colision = pygame.mixer.Sound("images/disparo.wav")
+            volumen = 100
+            sonido_colision.set_volume(volumen)
+            sonido_colision.play()
         
         if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False and not self.pause and self.win == False):
             self.move_x = 0

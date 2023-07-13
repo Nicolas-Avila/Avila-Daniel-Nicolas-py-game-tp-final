@@ -33,7 +33,7 @@
     },
     {
       "x": 960,
-      "y": 420,
+      "y": 410,
       "speed_walk": 6,
       "speed_run": 5,
       "gravity": 10,
@@ -48,7 +48,7 @@
     },
     {
       "x": 300,
-      "y": 100,
+      "y": 10,
       "speed_walk": 6,
       "speed_run": 5,
       "gravity": 10,

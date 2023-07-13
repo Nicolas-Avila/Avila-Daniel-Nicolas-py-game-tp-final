@@ -44,6 +44,11 @@ def main():
     running = True
     current_level = 0
 
+    pygame.mixer.music.load("images/disparo.wav")
+    volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+    pygame.mixer.music.set_volume(volumen)
+    pygame.mixer.music.play(loops=-1)
+
     while running:
 
         for event in pygame.event.get():
@@ -52,13 +57,16 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if marco_1_rect.collidepoint(event.pos):
-                    current_level = 1
+                    current_level = 1 
                 elif marco_2_rect.collidepoint(event.pos):
                     current_level = 2
                 elif marco_3_rect.collidepoint(event.pos):
                     current_level = 3
 
-        
+            if event.type == pygame.USEREVENT + 1:
+                pygame.mixer.music.play(loops=-1)  # Reiniciar la reproducción en bucle
+
+
         if current_level == 1:
             nivel_1()
         elif current_level == 2:

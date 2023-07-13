@@ -11,8 +11,8 @@ class Bullet(pygame.sprite.Sprite):
             self.disparo_d = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/bullet/{0}.png", 1, 10, flip=False, scale=p_scale)
             self.disparo_i = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/bullet/{0}.png", 1, 10, flip=True, scale=p_scale)
         elif type_bullet == "enemy":
-            self.disparo_d = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
-            self.disparo_i = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=True,scale=p_scale)
+            self.disparo_d = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/bullet_enemy/{0}.png", 1, 5,flip=False,scale=p_scale)
+            self.disparo_i = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/bullet_enemy/{0}.png", 1, 5, flip=True, scale=p_scale)
         
         self.direccion = direccion
         self.velocidad = 5  # Velocidad de movimiento del objeto

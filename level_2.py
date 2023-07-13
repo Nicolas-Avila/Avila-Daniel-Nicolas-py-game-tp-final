@@ -161,7 +161,7 @@ def nivel_2():
         if player_1.pause == True:
             marco_1_rect_nivel, marco_2_rect_nivel, pause_rect = pause(screen)
         if player_1.win == True:
-            marco_1_rect_win, marco_2_rect_win = win(screen)
+            marco_1_rect_win, marco_2_rect_win,win_rect = win(screen)
         if player_1.is_dead == True:
             marco_5_rect_win, marco_6_rect_win, dead_rect = dead_screen(screen)
 

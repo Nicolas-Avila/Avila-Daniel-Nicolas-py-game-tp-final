@@ -10,6 +10,7 @@ from botin import Item
 from pause import *
 import sys
 from main import *
+from level import nivel_1
 
 def load_platforms_from_json(json_file):
     with open(json_file) as file:
@@ -102,7 +103,7 @@ def nivel_3():
                     if marco_1_rect_win.collidepoint(event.pos):
                         main()
                     if marco_2_rect_win.collidepoint(event.pos):
-                       nivel_3() 
+                       nivel_1() 
 
 
                 if marco_5_rect_win is not None and marco_6_rect_win is not None:
@@ -160,7 +161,7 @@ def nivel_3():
         if player_1.pause == True:
             marco_1_rect_nivel, marco_2_rect_nivel, pause_rect = pause(screen)
         if player_1.win == True:
-            marco_1_rect_win, marco_2_rect_win = win(screen)
+            marco_1_rect_win, marco_2_rect_win,win_rect = win(screen)
         if player_1.is_dead == True:
             marco_5_rect_win, marco_6_rect_win, dead_rect = dead_screen(screen)
 

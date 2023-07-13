@@ -19,12 +19,16 @@ class Enemy(pygame.sprite.Sprite):
 
             self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",0,4,flip=False,scale=p_scale)
             self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",0,4,flip=True,scale=p_scale)
-        elif self.num_enemy == 2 :
+        elif self.num_enemy == 2:
             # self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
-            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=False,scale=p_scale)
-            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=True,scale=p_scale)
-            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=False,scale=p_scale)
-            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/run/{0}.png",1,8,flip=False,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/run/{0}.png",1,8,flip=True,scale=p_scale)
+            
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/atk/{0}.png",0,7,flip=False,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/atk/{0}.png",0,7,flip=True,scale=p_scale)
+
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/death/{0}.png",1,5,flip=False,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/archer/death/{0}.png",1,5,flip=True,scale=p_scale)
         elif self.num_enemy == 3:
             self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/walk/{0}.png",1,12,flip=True,scale=p_scale)
             self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/walk/{0}.png",1,12,flip=False,scale=p_scale)
@@ -206,13 +210,15 @@ class Enemy(pygame.sprite.Sprite):
            
             if self.num_enemy == 2 or self.num_enemy == 4:
                 
-                objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="enemy")
+                objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.3,type_bullet="enemy")
                 
                 if self.direction == DIRECTION_R:
                     objeto.velocidad_x = objeto.velocidad
+
                     
                 elif self.direction == DIRECTION_L:
                     objeto.velocidad_x = -objeto.velocidad
+
                 
                 self.bullet.add(objeto)
 
