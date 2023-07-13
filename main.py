@@ -5,7 +5,7 @@ from constantes import *
 pygame.init()
 
 
-pygame.display.set_caption("El bebe viejo (no es benjamin button)")
+pygame.display.set_caption("Armelito")
 icono = pygame.image.load("images/caracters/players/stay/0.png")
 pygame.display.set_icon(icono)
 
@@ -44,10 +44,12 @@ def main():
     running = True
     current_level = 0
 
-    pygame.mixer.music.load("images/disparo.wav")
-    volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+    # pygame.mixer.music.load("images/disparo.wav")
+    # volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+    # pygame.mixer.music.set_volume(volumen)
+    # pygame.mixer.music.play(loops=-1)
+    volumen = 0  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
     pygame.mixer.music.set_volume(volumen)
-    pygame.mixer.music.play(loops=-1)
 
     while running:
 
@@ -63,8 +65,8 @@ def main():
                 elif marco_3_rect.collidepoint(event.pos):
                     current_level = 3
 
-            if event.type == pygame.USEREVENT + 1:
-                pygame.mixer.music.play(loops=-1)  # Reiniciar la reproducción en bucle
+            # if event.type == pygame.USEREVENT + 1:
+            #     pygame.mixer.music.play(loops=-1)  # Reiniciar la reproducción en bucle
 
 
         if current_level == 1:

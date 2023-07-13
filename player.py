@@ -227,9 +227,17 @@ class Player(pygame.sprite.Sprite):
                 if (self.direction == DIRECTION_R):
                     self.animation = self.damage_r
                     self.move_x = 0
+                    pygame.mixer.music.load("images/sonido/damage_player.mp3")
+                    volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                    pygame.mixer.music.set_volume(volumen)
+                    pygame.mixer.music.play()
                 else:
                     self.animation = self.damage_l
                     self.move_x = 0
+                    pygame.mixer.music.load("images/sonido/damage_player.mp3")
+                    volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                    pygame.mixer.music.set_volume(volumen)
+                    pygame.mixer.music.play()
 
     def lanzar_objeto(self):
         '''
@@ -249,6 +257,10 @@ class Player(pygame.sprite.Sprite):
     def dead_animation(self):
         if self.is_dead == False:
             if self.lives <= 0:
+                pygame.mixer.music.load("images/sonido/dead_player.mp3")
+                volumen = 100  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                pygame.mixer.music.set_volume(volumen)
+                pygame.mixer.music.play(loops=-1)
                 self.move_x = 0
                 if (self.animation != self.dead_r and self.animation != self.dead_l):
                     self.frame += 1
@@ -257,6 +269,8 @@ class Player(pygame.sprite.Sprite):
                         self.animation = self.dead_r
                     else:
                         self.animation = self.dead_l
+
+
                     
 
 
@@ -386,7 +400,7 @@ class Player(pygame.sprite.Sprite):
             self.shoot()
             self.lanzar_objeto()
             self.attack_shoot = True  
-            sonido_colision = pygame.mixer.Sound("images/disparo.wav")
+            sonido_colision = pygame.mixer.Sound("images/sonido/disparo_player.mp3")
             volumen = 100
             sonido_colision.set_volume(volumen)
             sonido_colision.play()

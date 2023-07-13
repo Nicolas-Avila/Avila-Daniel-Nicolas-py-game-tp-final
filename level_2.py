@@ -65,6 +65,8 @@ def load_items_from_json(json_file):
         item_list.append(item)
     return item_list
 
+
+
 def nivel_2():
 
     clock = pygame.time.Clock()
@@ -85,6 +87,9 @@ def nivel_2():
     item_group.add(item_list)
 
     plataforma_list = load_platforms_from_json("nivel_2.json")
+
+    volumen = 0  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+    pygame.mixer.music.set_volume(volumen)
 
     while True:
         for event in pygame.event.get():
@@ -107,6 +112,7 @@ def nivel_2():
 
 
                 if marco_5_rect_win is not None and marco_6_rect_win is not None:
+
                     if marco_5_rect_win.collidepoint(event.pos):
                         main()
                     if marco_6_rect_win.collidepoint(event.pos):

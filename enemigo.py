@@ -77,6 +77,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        
        
         self.collition_rect = pygame.Rect(x+self.rect.width/3,y,self.rect.width/1.5,self.rect.height)
         self.ground_collition_rect = pygame.Rect(self.collition_rect)
@@ -161,6 +162,7 @@ class Enemy(pygame.sprite.Sprite):
         Player.lanzar_objeto(self)
     
     def death_animation(self):
+
         self.is_dead = True
         if self.direction == DIRECTION_R:
             self.animation = self.dead_r
@@ -168,6 +170,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.animation = self.dead_l
             self.frame = 0
+        
         
 
     def do_animation(self,delta_ms, enemy_list, index):
@@ -208,7 +211,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def lanzar_disparo(self):
            
-            if self.num_enemy == 2 or self.num_enemy == 4:
+            if self.num_enemy == 2 or self.num_enemy == 4 or self.num_enemy == 5:
                 
                 objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.3,type_bullet="enemy")
                 
@@ -267,9 +270,27 @@ class Enemy(pygame.sprite.Sprite):
 
     def receive_shoot(self,enemy_list):
         self.lives -= 1
+
         
         print(self.lives)
         if self.lives <= 0:
             self.lives = 0
             self.death_animation()
+            if self.num_enemy == 3:
+                pygame.mixer.music.load("images/sonido/demonio.mp3")
+                volumen = 100  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                pygame.mixer.music.set_volume(volumen)
+                pygame.mixer.music.play()
+            if self.num_enemy == 4:
+                pygame.mixer.music.load("images/sonido/demon_dead.mp3")
+                volumen = 100  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                pygame.mixer.music.set_volume(volumen)
+                pygame.mixer.music.play()
+            if self.num_enemy == 5:
+                pygame.mixer.music.load("images/sonido/cuak.mp3")
+                volumen = 0.4  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+                pygame.mixer.music.set_volume(volumen)
+                pygame.mixer.music.play()
+            
             enemy_list.remove(self)
+

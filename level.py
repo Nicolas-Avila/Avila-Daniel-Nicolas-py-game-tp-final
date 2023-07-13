@@ -86,6 +86,9 @@ def nivel_1():
 
     plataforma_list = load_platforms_from_json("nivel_1.json")
 
+    volumen = 0  # Establecr el volumen deseado (en este caso, la mitad del volumen máximo)
+    pygame.mixer.music.set_volume(volumen)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -107,6 +110,7 @@ def nivel_1():
 
 
                 if marco_5_rect_win is not None and marco_6_rect_win is not None:
+
                     if marco_5_rect_win.collidepoint(event.pos):
                         main()
                     if marco_6_rect_win.collidepoint(event.pos):
@@ -143,6 +147,7 @@ def nivel_1():
         # Draw score and lives
         if player_1.score <= 0:
             player_1.score = 0
+ 
             
         font_score = pygame.font.SysFont("comicsans", 40, True)
         score_text = font_score.render("Score: " + str(player_1.score), True, (255, 255, 255))

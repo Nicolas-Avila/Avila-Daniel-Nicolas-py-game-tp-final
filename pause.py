@@ -59,8 +59,8 @@ def dead_screen(screen):
     marco_6_image_win = pygame.image.load("images/gui/gui/botton_red/12.png")
     marco_6_image_win = pygame.transform.scale(marco_6_image_win, (100, 50))
     marco_6_rect_win = pygame.Rect(ANCHO_VENTANA / 2+70, ALTO_VENTANA / 2+110, 90, 90)  # Ajusta las coordenadas y el tamaño según sea necesario
-
-   
+                    
+    
     screen.blit(dead, dead_rect)
     screen.blit(marco_5_image_win, marco_5_rect_win)
     screen.blit(marco_6_image_win, marco_6_rect_win)

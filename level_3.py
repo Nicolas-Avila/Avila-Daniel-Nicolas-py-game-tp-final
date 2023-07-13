@@ -10,7 +10,7 @@ from botin import Item
 from pause import *
 import sys
 from main import *
-from level import nivel_1
+
 
 def load_platforms_from_json(json_file):
     with open(json_file) as file:
@@ -66,7 +66,7 @@ def load_items_from_json(json_file):
     return item_list
 
 def nivel_3():
-
+    from level import nivel_1
     clock = pygame.time.Clock()
 
 
@@ -85,6 +85,9 @@ def nivel_3():
     item_group.add(item_list)
 
     plataforma_list = load_platforms_from_json("nivel_3.json")
+
+    volumen = 0  # Establecer el volumen deseado (en este caso, la mitad del volumen máximo)
+    pygame.mixer.music.set_volume(volumen)
 
     while True:
         for event in pygame.event.get():
@@ -107,6 +110,7 @@ def nivel_3():
 
 
                 if marco_5_rect_win is not None and marco_6_rect_win is not None:
+
                     if marco_5_rect_win.collidepoint(event.pos):
                         main()
                     if marco_6_rect_win.collidepoint(event.pos):
