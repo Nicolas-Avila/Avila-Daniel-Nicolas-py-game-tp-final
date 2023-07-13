@@ -4,33 +4,62 @@ from auxiliar import Auxiliar
 from bulletbn import *
 class Enemy(pygame.sprite.Sprite):
     
-    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,num_enemy,p_scale=1,interval_time_jump=100) -> None:
+    def __init__(self,x,y,speed_walk,speed_run,gravity,jump_power,frame_rate_ms,move_rate_ms,jump_height,num_enemy,life,p_scale=1,interval_time_jump=100) -> None:
         super().__init__()
         self.num_enemy = num_enemy
 
         if self.num_enemy == 1:    
-            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,flip=True,scale=p_scale)
-            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,6,scale=p_scale)
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,8,flip=False,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/walk/{0}.png",1,8,flip=True,scale=p_scale)
             # self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/{0}.png",1,8,scale=p_scale)
-            # self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/IDLE_00{0}.png",0,7,flip=True,scale=p_scale)
+            # self.stay_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/idle/IDLE_00{0}.png",0,7,flip=False,scale=p_scale)
 
-            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",1,8,flip=True,scale=p_scale)
-            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",1,8,scale=p_scale)
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",0,10,flip=False,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/dead/{0}.png",0,10,flip=True,scale=p_scale)
 
-            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",1,10,flip=True,scale=p_scale)
-            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",1,10,scale=p_scale)
-        elif self.num_enemy == 2:
-
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",0,4,flip=False,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/bringer/attack/{0}.png",0,4,flip=True,scale=p_scale)
+        elif self.num_enemy == 2 :
             # self.stay_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/stay/{0}.png",0,5,flip=False,scale=p_scale)
             self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=False,scale=p_scale)
             self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/walk/{0}.png",0,5,flip=True,scale=p_scale)
             self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=False,scale=p_scale)
             self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
+        elif self.num_enemy == 3:
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/walk/{0}.png",1,12,flip=True,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/walk/{0}.png",1,12,flip=False,scale=p_scale)
+
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/dead/{0}.png",1,22,flip=True,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/dead/{0}.png",1,22,flip=False,scale=p_scale)
+
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/atack/{0}.png",1,5,flip=True,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/demon/individual/atack/{0}.png",1,5,flip=False,scale=p_scale)
+        elif self.num_enemy == 4:
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/walk/{0}.png",1,8,flip=False,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/walk/{0}.png",1,8,flip=True,scale=p_scale)
+
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/dead/{0}.png",1,7,flip=False,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/dead/{0}.png",1,7,flip=True,scale=p_scale)
+
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/attack/{0}.png",1,7,flip=False,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/wizard/attack/{0}.png",1,7,flip=True,scale=p_scale)
+
+        elif self.num_enemy == 5:
+            self.walk_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/arme/{0}.png",0,17,flip=False,scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/arme/{0}.png",0,17,flip=True,scale=p_scale)
+
+            self.dead_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/dead/{0}.png",1,3,flip=False,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/dead/{0}.png",1,3,flip=True,scale=p_scale)
+
+            self.attack_r = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/arme/{0}.png",0,17,flip=False,scale=p_scale)
+            self.attack_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/enemies/armelito/arme/{0}.png",0,17,flip=True,scale=p_scale)
+
+        
 
 
         self.contador = 0
         self.frame = 0
-        self.lives = 3
+        self.lives = life
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -45,9 +74,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
        
-        self.collition_rect = pygame.Rect(x+self.rect.width/2,y,self.rect.width/3,self.rect.height)
+        self.collition_rect = pygame.Rect(x+self.rect.width/3,y,self.rect.width/1.5,self.rect.height)
         self.ground_collition_rect = pygame.Rect(self.collition_rect)
-        self.ground_collition_rect.height = GROUND_COLLIDE_H
+        self.ground_collition_rect.height = GROUND_COLLIDE_H 
         self.ground_collition_rect.y = y + self.rect.height - GROUND_COLLIDE_H
 
         self.is_jump = False
@@ -66,7 +95,7 @@ class Enemy(pygame.sprite.Sprite):
 
         #self.attack_shoot = False
         self.bullet = pygame.sprite.Group()
-        self.attack_cooldown = 2000 
+        self.attack_cooldown = 1000 
         self.last_attack_time = pygame.time.get_ticks()
 
         self.tiempo_transcurrido = 0
@@ -131,8 +160,10 @@ class Enemy(pygame.sprite.Sprite):
         self.is_dead = True
         if self.direction == DIRECTION_R:
             self.animation = self.dead_r
+            self.frame = 0
         else:
             self.animation = self.dead_l
+            self.frame = 0
         
 
     def do_animation(self,delta_ms, enemy_list, index):
@@ -149,7 +180,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.frame=0
 
     def puede_atacar(self,player):
-         
+         #para atacar cuadno esta frente tuyo
         if player.rect.y == self.rect.y:
             if player.rect.x > self.rect.x and self.direction == DIRECTION_R:
                 # El enemigo está a la derecha del jugador
@@ -173,7 +204,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def lanzar_disparo(self):
            
-            if self.num_enemy == 2:
+            if self.num_enemy == 2 or self.num_enemy == 4:
+                
                 objeto = Bullet(self.rect.centerx, self.rect.centery, self.direction, self, p_scale=0.5,type_bullet="enemy")
                 
                 if self.direction == DIRECTION_R:
@@ -191,13 +223,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_attack_time = pygame.time.get_ticks()
 
     def check_collision(self,player):
-        if self.num_enemy == 1:
+        if self.num_enemy == 1 or self.num_enemy == 3:
             if player.is_dead == False:
                 if self.rect.colliderect(player.rect):  # Colisión detectada
                     if self.direction == DIRECTION_R:
                         self.check_collition == True
                         self.move_x = 0
                         self.animation = self.attack_r
+                        self.frame = 0
                         player.lives-=1
                         
                         
@@ -206,12 +239,9 @@ class Enemy(pygame.sprite.Sprite):
                         self.check_collition == True
                         self.move_x = 0
                         self.animation = self.attack_l
+                        self.frame = 0
                         player.lives-=1
                         
-                    
-
-
-
 
     def update(self,delta_ms,plataform_list,index,enemy_list,player):
         if not player.pause:

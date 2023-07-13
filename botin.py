@@ -12,6 +12,10 @@ class Item(pygame.sprite.Sprite):
             self.image = pygame.image.load("images/item/38.png")
         elif self.type_item == 2:
             self.image = pygame.image.load("images/item/39.png")
+        elif self.type_item == 3:
+            self.image = pygame.image.load("images/item/51.png")
+        elif self.type_item == 4:
+            self.image = pygame.image.load("images/item/40.png")
         self.image = pygame.transform.scale(self.image,(self.width,self.height))
         self.rect = self.image.get_rect()
         self.rect.x = x

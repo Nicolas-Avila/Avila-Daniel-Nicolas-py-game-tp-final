@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.dead_l = Auxiliar.getSurfaceFromSeparateFiles("images/caracters/players/dead/{0}.png",0,17,flip=True,scale=p_scale)
 
         self.frame = 0
-        self.lives = 2
+        self.lives = 5
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -281,9 +281,9 @@ class Player(pygame.sprite.Sprite):
                 if self.rect.colliderect(enemigo.rect):
                     self.recibir_ataque()
                     if self.direction == DIRECTION_R:
-                        self.change_x(-50)
+                        self.change_x(-100)
                     elif self.direction == DIRECTION_L:
-                        self.change_x(+50)
+                        self.change_x(+100)
 
  
     def update(self, delta_ms, plataform_list,enemy_list,player):
@@ -323,7 +323,12 @@ class Player(pygame.sprite.Sprite):
                 if item.type_item == 1:
                     self.lives += 1
                 elif item.type_item == 2:
-                    self.score += 999
+                    self.score += 10
+                elif item.type_item ==3:
+                    self.lives -=2
+                    self.score -=10
+                elif item.type_item ==4:
+                    self.score +=500
             
             for enemy in enemy_list:
                 for objeto in enemy.bullet:
@@ -333,6 +338,7 @@ class Player(pygame.sprite.Sprite):
 
         if len(enemy_list) == 0:
             self.win = True
+            self.move_x = 0
         
 
     
@@ -352,40 +358,40 @@ class Player(pygame.sprite.Sprite):
         self.tiempo_transcurrido += delta_ms
 
 
-        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause):
+        if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause and self.win == False ):
             self.walk(DIRECTION_L)
 
-        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause):
+        if(not keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and self.is_dead == False and not self.pause and self.win == False):
             self.walk(DIRECTION_R)
 
-        if(not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause):
+        if(not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause and self.win == False):
             self.stay()
-        if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause):
+        if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT] and not keys[pygame.K_SPACE] and not self.pause and self.win == False):
             self.stay()  
 
         
-        if keys[pygame.K_SPACE] and self.is_dead == False and not self.pause:
+        if keys[pygame.K_SPACE] and self.is_dead == False and not self.pause and self.win == False:
             if (self.tiempo_transcurrido - self.tiempo_last_jump) > self.interval_time_jump:
                 self.jump(True)
                 self.tiempo_last_jump = self.tiempo_transcurrido
 
-        if(not keys[pygame.K_a] and not self.pause):
+        if(not keys[pygame.K_a] and not self.pause and self.win == False):
                 self.shoot(False)  
 
-        if(not keys[pygame.K_a] and not self.pause):
+        if(not keys[pygame.K_a] and not self.pause and self.win == False):
                 self.knife(False)  
 
-        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot and self.is_dead == False and not self.pause):
+        if(keys[pygame.K_s] and not keys[pygame.K_a] and not self.attack_shoot and self.is_dead == False and not self.pause and self.win == False):
             self.move_x = 0
             self.shoot()
             self.lanzar_objeto()
             self.attack_shoot = True  
         
-        if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False and not self.pause):
+        if(keys[pygame.K_a] and not keys[pygame.K_s] and self.is_dead == False and not self.pause and self.win == False):
             self.move_x = 0
             self.knife()   
 
-        if(keys[pygame.K_ESCAPE]):
+        if(keys[pygame.K_ESCAPE] and self.win == False):
             self.pause = True
 
         

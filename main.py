@@ -5,6 +5,10 @@ from constantes import *
 pygame.init()
 
 
+pygame.display.set_caption("El bebe viejo (no es benjamin button)")
+icono = pygame.image.load("images/caracters/players/stay/0.png")
+pygame.display.set_icon(icono)
+
 screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
 
 fondo = pygame.image.load("images/locations/castle.png").convert()
@@ -35,10 +39,13 @@ marco_3_rect = pygame.Rect(ANCHO_VENTANA / 2-75, ALTO_VENTANA / 2+10, 90, 90)  #
 def main():
     # Lógica del juego
     from level import nivel_1
+    from level_2 import nivel_2
+    from level_3 import nivel_3
     running = True
     current_level = 0
 
     while running:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -55,9 +62,9 @@ def main():
         if current_level == 1:
             nivel_1()
         elif current_level == 2:
-            pass
+            nivel_2()
         elif current_level == 3:
-            pass
+            nivel_3()
         # Añade más niveles según sea necesario
     
         screen.blit(fondo, (0, 0))
